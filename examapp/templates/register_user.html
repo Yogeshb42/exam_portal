@@ -1,0 +1,58 @@
+<title>{% block title %}Register{% endblock %}</title>
+{% load static %}
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=Amaranth" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% block body %}
+ <ul class='navi'>
+   <li class='navig'><a id="hd" href="{% url 'examapp:index' %}">Exam Portal</a></li>
+   <li class='navig'><a id="md" href="{% url 'examapp:home' %}">HOME</a></li>
+  <li class='navig'><a id="md" href="{% url 'examapp:login_user' %}">LOGIN</a></li>
+  <li class='navig'><a id="md" href="{% url 'examapp:index' %}">&nbsp;&nbsp;{{ user.username.upper }}</a></li>
+</ul>
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3 id="form">Register For An Account</h3>
+                    {% if error_message %}
+                        <p><strong>{{ error_message }}</strong></p>
+                    {% endif %}
+                    <div id="load" style="display: none">
+                    <div class="f_circleG" id="frotateG_01"></div>
+                    <div class="f_circleG" id="frotateG_02"></div>
+                    <div class="f_circleG" id="frotateG_03"></div>
+                    <div class="f_circleG" id="frotateG_04"></div>
+                    <div class="f_circleG" id="frotateG_05"></div>
+                    <div class="f_circleG" id="frotateG_06"></div>
+                    <div class="f_circleG" id="frotateG_07"></div>
+                    <div class="f_circleG" id="frotateG_08"></div>
+                    </div>
+                <form class="form-horizontal" role="form" action="" method="post" enctype="multipart/form-data" onsubmit="return ray.ajax()">
+                    {% csrf_token %}
+                    {% include 'form_template.html' %}
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <button type="submit" class="btn btn-success">Register</button>
+                        </div>
+                    </div>
+                </form>
+                </div>
+                <div class="panel-footer">
+                    Already have an account? <a href="{% url 'examapp:login_user' %}">Click here</a> to log in.
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <img src="../../static/side_image.jpg" alt=" ">
+        </div>
+    </div>
+
+</div>
+    {% include 'base_bottom.html' %}
+
+{% endblock %}

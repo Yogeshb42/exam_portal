@@ -1,0 +1,61 @@
+{% load static %}
+<title>{% block title %}User Login{% endblock %}</title>
+
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link href="https://fonts.googleapis.com/css?family=Amaranth" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% block body %}
+    <ul class='navi'>
+   <li class='navig'><a id="hd" href="{% url 'examapp:index' %}">Exam Portal</a></li>
+   <li class='navig'><a id="md" href="{% url 'examapp:home' %}">HOME</a></li>
+  <li class='navig'><a id="md" href="{% url 'examapp:register_user' %}">REGISTER</a></li>
+  <li class='navig'><a id="md" href="{% url 'examapp:index' %}">&nbsp;&nbsp;{{ user.username.upper }}</a></li>
+</ul>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12 col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <h3 id="form">Log In</h3>
+                    {% if error_message %}
+                        <p><strong class="text-danger">{{ error_message }}</strong></p>
+                    {% endif %}
+                    <form class="form-horizontal" role="form" action="{% url 'examapp:login_user'%}" method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" id="fields" for="id_username">
+                                Username:
+                            </label>
+                            <div class="col-sm-10">
+                                <input id="id_username" maxlength="30" name="username" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-sm-2" id="fields" for="id_password">
+                                Password:
+                            </label>
+                            <div class="col-sm-10">
+                                <input id="id_password" maxlength="30" name="password" type="password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-success">Login</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer">
+                    Forgot Password? <a href='http://127.0.0.1:8000/user/password/reset/'>Click here</a><br>
+                    Don't have an account? <a href="{% url 'examapp:register_user' %}">Click here</a> to register.
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+            <img src="../../static/side_image.jpg" alt=" ">
+        </div>
+    
+    </div>
+    {% include 'base_bottom.html' %}
+{% endblock %}

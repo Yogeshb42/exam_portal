@@ -1,0 +1,39 @@
+{% load static %}
+<script src="{% static 'script.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link href="https://fonts.googleapis.com/css?family=Amaranth" rel="stylesheet">
+
+{% block body %}
+
+{% if request.user.is_authenticated %}
+    <ul class='navi'>
+      <li class='navig'><a id="hd" href="{% url 'examapp:index' %}">Exam Portal</a></li>
+      <li class='navig'><a id="md" href="{% url 'examapp:home' %}">HOME</a></li>
+      {% if request.user.is_staff %}
+      <li class='navig'><a id="md" href="{% url 'examapp:add_question' %}">ADD QUESTION</a></li>
+      {%endif%}
+      <li class='navig'><a id="md" href="{% url 'examapp:logout_user' %}">LOGOUT</a></li>
+    </ul>
+    <div class="footer-top"  style="margin: 30px;">
+      <h3 id="form">&nbsp;&nbsp;{{ user.username.upper }}</h3>
+      </div>
+
+    {% else %}
+    <ul class='navi'>
+       <li class='navig'><a id="hd" href="{% url 'examapp:index' %}">Exam Portal</a></li>
+       <li class='navig'><a id="md" href="{% url 'examapp:login_user' %}">LOGIN</a></li>
+        <li class='navig'><a id="md" href="{% url 'examapp:register_user' %}">REGISTER</a></li>
+    </ul>
+	<br>
+    <h4 style="color: white; text-align: center;">Welcome</h4>
+    <div>
+      <br>
+      <h4 style="color: white; text-align: center;">This is exam portal. 
+        Users can give exam and check their scores after the completion of the exam. </h4>
+      <br>
+    </div>
+    {% endif %}
+{% endblock %}

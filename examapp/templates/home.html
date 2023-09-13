@@ -1,0 +1,21 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+</head>
+<body>
+  {% include 'base_top.html' %}
+    <div style="text-align: center;">
+      <h3 style="color: white ;"> Today you have exam of subject : {{subject}}</h3>
+      <button type="submit" onclick="gotoExamPage()">Start Exam</button>
+      <br><br>
+    </div><br>
+
+</body>
+
+<script>
+  function gotoExamPage(){
+        window.location.href = "http://localhost:8000/exam";
+    }
+  </script>
+</html>
+{% include 'base_bottom.html' %}

@@ -1,0 +1,13 @@
+{% load static %}
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<link rel="stylesheet" href="{% static 'style.css' %}">
+{% block body %}
+<img style="width:100%;" id="image" src="../../static/bottom_image.png">
+
+<div class="footer">
+	<div class="container">
+		<h2><a href="{% url 'examapp:index' %}">Exam Portal</a></h2>
+		<p>© 2023 Exam Portal. All Rights Reserved</p>
+	</div>
+</div>
+{% endblock %}
