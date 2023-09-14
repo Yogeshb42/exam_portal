@@ -3,6 +3,4 @@ services:
     name: examportal
     buildCommand: "./build.sh"
     startCommand: "gunicorn mysite.wsgi:application"
-databases:
-  - name: db
-    plan: sqlite
+    
