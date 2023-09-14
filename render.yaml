@@ -1,6 +1,8 @@
 services:
   - type: web
     name: examportal
-    runtime: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn mysite.wsgi:application"
+databases:
+  - name: db
+    plan: sqlite
