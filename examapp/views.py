@@ -26,7 +26,7 @@ def home(request):
 
 def exam(request):
     if Result.objects.filter(user = request.user).exists():
-        return redirect('http://localhost:8000/result')
+        return redirect('https://exam-portal-yajl.onrender.com/result')
 
     elif request.method == 'POST':
         questions=ExamModel.objects.filter(subject = request.user.subject)[:10]
@@ -61,7 +61,7 @@ def exam(request):
                    subject = request.user.subject)
         r.save()
         # return redirect('result')
-        return redirect('http://localhost:8000/result')
+        return redirect('https://exam-portal-yajl.onrender.com/result')
     else:
         if request.user.subject is None:
             return render(request, 'subject_unselected.html') 
@@ -73,7 +73,7 @@ def exam(request):
     
 def result(request):
     if not Result.objects.filter(user = request.user).exists():
-        return redirect('http://localhost:8000/home')
+        return redirect('https://exam-portal-yajl.onrender.com/home')
 
     r = Result.objects.filter(user = request.user).values()
     for a in r:
@@ -104,7 +104,7 @@ def login_user(request):
                 if user.is_active:
                     login(request, user)
                     # return render(request, 'home.html',)
-                    return redirect('http://localhost:8000/home')
+                    return redirect('https://exam-portal-yajl.onrender.com/home')
                 else:
                     return render(request, 'login_user.html', {'error_message': 'Your account has been disabled'})
             else:
@@ -126,7 +126,7 @@ def register_user(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect('http://localhost:8000/home')
+                return redirect('https://exam-portal-yajl.onrender.com/home')
     context = {
         "form": form,
     }
@@ -143,10 +143,10 @@ def add_question(request):
             form=addQuestionform(request.POST)
             if(form.is_valid()):
                 form.save()
-                return redirect('http://localhost:8000/add_question')
+                return redirect('https://exam-portal-yajl.onrender.com/add_question')
         context={'form':form}
         return render(request,'add_question.html',context)
     else: 
         # return render(request,'home.html')
-        return redirect('http://localhost:8000/home')
+        return redirect('https://exam-portal-yajl.onrender.com/home')
 
