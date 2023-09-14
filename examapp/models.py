@@ -3,30 +3,32 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import RegexValidator
 
+
+phone_regex = RegexValidator(regex=r'^[789]\d{9}$', message="Numeric Field. Only 10 digits allowed.")
+
 subject_choice =(
     ("Maths", "Maths"),
     ("Science", "Science"),
 )
 
 class CustomUser(AbstractUser):
-    phone_regex = RegexValidator(regex=r'^[789]\d{9}$', message="Numeric Field. Only 10 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=10, unique=True)
     subject = models.CharField(max_length=255, blank=True, null=True, choices=subject_choice)
 
     def __str__(self):
         return self.username
 
-class QuesModel(models.Model):
+class ExamModel(models.Model):
     subject = models.CharField(max_length=200,choices = subject_choice)
-    question = models.CharField(max_length=200,null=True)
-    op1 = models.CharField(max_length=200,null=True)
-    op2 = models.CharField(max_length=200,null=True)
-    op3 = models.CharField(max_length=200,null=True)
-    op4 = models.CharField(max_length=200,null=True)
-    ans = models.CharField(max_length=200,null=True)
+    question_name = models.CharField(max_length=200,null=True)
+    option1 = models.CharField(max_length=200,null=True)
+    option2 = models.CharField(max_length=200,null=True)
+    option3 = models.CharField(max_length=200,null=True)
+    option4 = models.CharField(max_length=200,null=True)
+    answer = models.CharField(max_length=200,null=True)
     
-    def __str__(self):
-        return self.question
+    # def __str__(self):
+    #     return self.question
 
 class Result(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE)

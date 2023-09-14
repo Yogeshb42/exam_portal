@@ -1,5 +1,5 @@
 from django import forms
-from .models import CustomUser, QuesModel
+from .models import CustomUser, ExamModel
 from django.core.validators import RegexValidator
 from django.conf import settings
 user_model = settings.AUTH_USER_MODEL
@@ -30,5 +30,5 @@ class UserReg(forms.ModelForm):
     
 class addQuestionform(forms.ModelForm):
     class Meta:
-        model = QuesModel
+        model = ExamModel
         fields="__all__"

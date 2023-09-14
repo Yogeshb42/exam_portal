@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from .forms import UserReg, addQuestionform
 from django.conf import settings
-from .models import CustomUser, QuesModel, Result
+from .models import CustomUser, ExamModel, Result
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse, HttpResponse
 from django.views import View
@@ -29,32 +29,27 @@ def exam(request):
         return redirect('http://localhost:8000/result')
 
     elif request.method == 'POST':
-        # print(request.POST)
-        # questions=QuesModel.objects.all()
-        # print(questions)
-        # print("User Subject:", request.user.subject)
-        questions=QuesModel.objects.filter(subject = request.user.subject)
-
+        questions=ExamModel.objects.filter(subject = request.user.subject)[:10]
         score=0
         wrong=0
         correct=0
         total=0
-        skipped =0
-        que = []
+        skipped=0
+        
         for q in questions:
             total+=1
-            answer = request.POST.get(q.question)
+            answer = request.POST.get(q.question_name)
             items = vars(q)
             try:
-                print("Question :", q)
-                print("User's Answer :", items[answer], "\tCorrect Answer :", q.ans)
+                print("Question :", q.question_name)
+                print("User's Answer :", items[answer], "\tCorrect Answer :", q.answer)
                 print()
             except KeyError:
                 print("This question is skipped.")
 
             if answer is None:
                 skipped+=1
-            elif q.ans == items[answer]:
+            elif q.answer == items[answer]:
                 score+=4
                 correct+=1
             else:
@@ -68,18 +63,18 @@ def exam(request):
         # return redirect('result')
         return redirect('http://localhost:8000/result')
     else:
-        # questions=QuesModel.objects.all()
-        
         if request.user.subject is None:
             return render(request, 'subject_unselected.html') 
-        questions=QuesModel.objects.filter(subject = request.user.subject)
+        questions=ExamModel.objects.filter(subject = request.user.subject)[:10]
         context = {
             'questions':questions
         }
-
         return render(request, 'exam.html',context)
     
 def result(request):
+    if not Result.objects.filter(user = request.user).exists():
+        return redirect('http://localhost:8000/home')
+
     r = Result.objects.filter(user = request.user).values()
     for a in r:
         score = a['score']
@@ -131,7 +126,7 @@ def register_user(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return render(request, 'home.html')
+                return redirect('http://localhost:8000/home')
     context = {
         "form": form,
     }
