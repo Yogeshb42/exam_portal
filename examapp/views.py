@@ -6,6 +6,8 @@ from .models import CustomUser, ExamModel, Result
 from django.views.generic.base import TemplateView
 from django.http import JsonResponse, HttpResponse
 from django.views import View
+from random import sample
+from .serializers import ExamModelSerializer
 
 user_model = settings.AUTH_USER_MODEL
 
@@ -26,10 +28,64 @@ def home(request):
 
 def exam(request):
     if Result.objects.filter(user = request.user).exists():
-        return redirect('https://exam-portal-yajl.onrender.com/result')
+        return redirect('http://localhost:8000/result')
+    
+    elif request.method == 'GET':
+        if request.user.subject is None:
+            return render(request, 'subject_unselected.html') 
+        all_questions=ExamModel.objects.filter(subject = request.user.subject).all()
+        questions = sample(list(all_questions), 10)
+        serializer = ExamModelSerializer(questions, many=True)
+        print(serializer.data)
+        request.session['questions'] = serializer.data   #saving in session variable
+
+        context = {
+            'questions':questions
+        }
+        return render(request, 'exam.html',context)
 
     elif request.method == 'POST':
-        questions=ExamModel.objects.filter(subject = request.user.subject)[:10]
+        # all_questions=ExamModel.objects.filter(subject = request.user.subject).all()
+
+        # # for random questions
+        # questions = sample(list(all_questions), 10)
+        
+        # questions = request.session.get('questions')
+
+
+
+        # serialized_data = request.session.get('questions', [])
+
+        # # Create a serializer instance to deserialize the data
+        # deserializer = ExamModelSerializer(data=serialized_data, many=True)
+
+        # # Check if the data is valid and deserialize it
+        # if deserializer.is_valid():
+        #     deserialized_data = deserializer.validated_data
+
+        # questions = deserialized_data
+        # print(questions)
+
+
+
+        # Retrieve serialized data from the session
+        serialized_data = request.session.get('questions', [])
+
+        # Deserialize the data into a list of dictionaries
+        questions_data = serialized_data
+
+        # Initialize a list to hold deserialized ExamModel instances
+        questions = []
+
+        # Create ExamModel instances from the deserialized data
+        for data in questions_data:
+            serializer = ExamModelSerializer(data=data)
+            if serializer.is_valid():
+                exam_model_instance = serializer.save()
+                questions.append(exam_model_instance)
+
+
+
         score=0
         wrong=0
         correct=0
@@ -55,31 +111,25 @@ def exam(request):
             else:
                 wrong+=1
                 score-=1
+            print("correct:", correct)
         
         r = Result(user = request.user, username = request.user.username, score = score, 
-                   total_questions = total, correct_anwers = correct, wrong_anwers = wrong, skipped_questions = skipped,
+                   total_questions = total, correct_answers = correct, wrong_answers = wrong, skipped_questions = skipped,
                    subject = request.user.subject)
         r.save()
         # return redirect('result')
-        return redirect('https://exam-portal-yajl.onrender.com/result')
-    else:
-        if request.user.subject is None:
-            return render(request, 'subject_unselected.html') 
-        questions=ExamModel.objects.filter(subject = request.user.subject)[:10]
-        context = {
-            'questions':questions
-        }
-        return render(request, 'exam.html',context)
+        return redirect('http://localhost:8000/result')
+    
     
 def result(request):
     if not Result.objects.filter(user = request.user).exists():
-        return redirect('https://exam-portal-yajl.onrender.com/home')
+        return redirect('http://localhost:8000/home')
 
     r = Result.objects.filter(user = request.user).values()
     for a in r:
         score = a['score']
-        correct = a['total_questions']
-        wrong = a['wrong_anwers']
+        correct = a['correct_answers']
+        wrong = a['wrong_answers']
         skipped = a['skipped_questions']
         total = a['total_questions']
         subject = a['subject']
@@ -90,7 +140,8 @@ def result(request):
         'wrong':wrong,
         'skipped':skipped,
         'total':total,
-        'subject':subject
+        'subject':subject,
+        'total_marks':total*4
     }
     return render(request, 'result.html',context)
 
@@ -104,7 +155,7 @@ def login_user(request):
                 if user.is_active:
                     login(request, user)
                     # return render(request, 'home.html',)
-                    return redirect('https://exam-portal-yajl.onrender.com/home')
+                    return redirect('http://localhost:8000/home')
                 else:
                     return render(request, 'login_user.html', {'error_message': 'Your account has been disabled'})
             else:
@@ -126,7 +177,7 @@ def register_user(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return redirect('https://exam-portal-yajl.onrender.com/home')
+                return redirect('http://localhost:8000/home')
     context = {
         "form": form,
     }
@@ -143,10 +194,10 @@ def add_question(request):
             form=addQuestionform(request.POST)
             if(form.is_valid()):
                 form.save()
-                return redirect('https://exam-portal-yajl.onrender.com/add_question')
+                return redirect('http://localhost:8000/add_question')
         context={'form':form}
         return render(request,'add_question.html',context)
     else: 
         # return render(request,'home.html')
-        return redirect('https://exam-portal-yajl.onrender.com/home')
+        return redirect('http://localhost:8000/home')
 

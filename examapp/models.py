@@ -35,8 +35,8 @@ class Result(models.Model):
     username = models.CharField(max_length=30, blank=True)
     score = models.IntegerField(default=0)
     total_questions = models.IntegerField(default=0)
-    correct_anwers = models.IntegerField(default=0)
-    wrong_anwers = models.IntegerField(default=0)
+    correct_answers = models.IntegerField(default=0)
+    wrong_answers = models.IntegerField(default=0)
     skipped_questions = models.IntegerField(default=0)
     subject = models.CharField(max_length=200, blank=True, null=True)
 
