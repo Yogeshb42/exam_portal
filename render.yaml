@@ -1,8 +1,6 @@
 services:
-  - name: web
-    buildCommand: pip install Django
-    startCommand: python manage.py runserver 0.0.0.0:$PORT
-
-databases:
-  - name: db
-    plan: sqlite
+  - type: web
+    name: examportal
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn mysite.wsgi:application"
